@@ -17,7 +17,7 @@ function DetailsPage() {
       <h1 className="results-title">{state.url} Results</h1>
       <p className="page-count">{pageCount} Pages Found</p>
       <div className="technologies-list">
-        {technologies.map((tech, index) => (
+        {technologies?.map((tech, index) => (
           <div className="technology-item" key={index}>
             {tech.name}
             {tech.categories && (
