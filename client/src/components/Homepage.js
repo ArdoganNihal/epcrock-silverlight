@@ -1,5 +1,5 @@
 // HomePage.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./css/Homepage.css";
 
@@ -8,6 +8,19 @@ function HomePage() {
   const [analysisQueue, setAnalysisQueue] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Kullanıcının önceden yapmış olduğu analizleri localStorage'dan al
+    const savedAnalyses = localStorage.getItem("analyses");
+    if (savedAnalyses) {
+      setAnalysisQueue(JSON.parse(savedAnalyses));
+    }
+  }, []);
+
+  useEffect(() => {
+    // Analiz kuyruğunu localStorage'a kaydet
+    localStorage.setItem("analyses", JSON.stringify(analysisQueue));
+  }, [analysisQueue]);
 
   const validURL = (str) => {
     const pattern = new RegExp(
@@ -40,8 +53,10 @@ function HomePage() {
   const handleViewMoreClick = (url) => {
     // Burada `url`'e göre analiz sonuçlarını buluyoruz
     const analysisResult = analysisQueue.find((item) => item.url === url);
-    // `DetailsPage` bileşenine geçiş için `navigate` fonksiyonunu çağırıyoruz
-    navigate("/details", { state: { ...analysisResult } });
+    if (analysisResult) {
+      // Detay sayfasına geçiş yap ve sonuçları state olarak geçir
+      navigate("/details", { state: analysisResult });
+    }
   };
 
   const handleSubmit = async (event) => {
